@@ -1,0 +1,10 @@
+name: freyja
+channels:
+    - conda-forge
+    - defaults
+    - bioconda
+dependencies:
+  - bioconda::freyja=1.4.3
+  - pip
+  - pip:
+    - python-outbreak-info==1.0.1
