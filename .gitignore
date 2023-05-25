@@ -1,6 +1,4 @@
-# nextflow
 work
 .nextflow*
-
-# input data
 data/input_bam/*
+.vscode
