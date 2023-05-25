@@ -1,4 +1,4 @@
-name: freyja
+name: cryptic-variants
 channels:
     - conda-forge
     - defaults
