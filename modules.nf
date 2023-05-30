@@ -53,3 +53,10 @@ process COVARIANTS {
     freyja covariants ${trimmed_bam} ${params.min_site} ${params.max_site} --ref-genome ${params.ref} --output ${trimmed_bam.baseName}.covariants.tsv 
     """
 }
+
+process AUTHENTICATE_GISAID {
+    script:
+    """
+    (echo "from outbreak_data import authenticate_user" ; echo "authenticate_user.authenticate_new_user()") | python
+    """
+}

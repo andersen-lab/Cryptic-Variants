@@ -2,3 +2,4 @@ work
 .nextflow*
 data/input_bam/*
 .vscode
+log/*
