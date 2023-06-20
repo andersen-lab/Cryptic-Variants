@@ -13,6 +13,7 @@ params.is_trimmed = true
 
 // Sars-Cov-2 specific parameters
 params.ref = "$PWD/data/NC_045512_Hu-1.fasta"
+params.gff_file = "$PWD/data/NC_045512_Hu-1.gff"
 params.primer_bed = "$PWD/data/nCov-2019_v3.primer.bed"
 
 // Freyja covariants parameters
@@ -26,6 +27,7 @@ params.max_gisaid_count = 10
 params.location_id = "USA"
 
 ref = file(params.ref)
+gff_file = file(params.gff_file)
 primer_bed = file(params.primer_bed)
 detect_cryptic_script = file(params.detect_cryptic_script)
 
@@ -46,9 +48,9 @@ workflow {
 
     if (!params.is_trimmed) {
         TRIM(SORT.out)
-        COVARIANTS(TRIM.out, ref)
+        COVARIANTS(TRIM.out, ref, gff_file)
     } else {
-        COVARIANTS(SORT.out, ref)
+        COVARIANTS(SORT.out, ref, gff_file)
     }
     DETECT_CRYPTIC(COVARIANTS.out, detect_cryptic_script)
 }
