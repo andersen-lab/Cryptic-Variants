@@ -1,4 +1,4 @@
-FROM mambaorg/micromamba:0.25.1
+FROM --platform=linux/x86_64 mambaorg/micromamba:0.25.1
 
 LABEL image.author.name "Dylan Pilz"
 LABEL image.author.email "dpilz@scripps.edu"

@@ -15,48 +15,47 @@ process SORT {
     """
 }
 
-process INDEX {
-    input:
-    path sorted_bam
-
-    output:
-    path "${sorted_bam}.bai"
-
-    script:
-    """
-    samtools index ${sorted_bam}
-    """
-}
-
 process TRIM {
     input:
     path sorted_bam
+    path primer_bed
 
     output:
     path "${sorted_bam.baseName}.trimmed.bam"
 
     script:
     """
-    ivar trim -x 5 -e -i ${sorted_bam} -b ${params.primer_bed} -p ${sorted_bam.baseName}.trimmed.bam
+    ivar trim -x 5 -e -i ${sorted_bam} -b ${primer_bed} -p ${sorted_bam.baseName}.trimmed.bam
     """
 }
 
 process COVARIANTS {
     input:
     path trimmed_bam
+    path ref
 
     output:
     path "${trimmed_bam.baseName}.covariants.tsv"
 
     script:
     """
-    freyja covariants ${trimmed_bam} ${params.min_site} ${params.max_site} --ref-genome ${params.ref} --output ${trimmed_bam.baseName}.covariants.tsv 
+    samtools index ${trimmed_bam}
+    freyja covariants ${trimmed_bam} ${params.min_site} ${params.max_site} --ref-genome ${ref} --output ${trimmed_bam.baseName}.covariants.tsv 
     """
 }
 
-process AUTHENTICATE_GISAID {
+process DETECT_CRYPTIC {
+    publishDir "data/output", mode: 'copy'
+
+    input:
+    path covariants
+    path detect_cryptic_script
+
+    output:
+    path "${covariants.baseName}.cryptic.tsv"
+
     script:
     """
-    (echo "from outbreak_data import authenticate_user" ; echo "authenticate_user.authenticate_new_user()") | python
+    python ${detect_cryptic_script} --max_clinical_count ${params.max_gisaid_count} --location_id ${params.location_id} --output ${covariants.baseName}.cryptic.tsv ${covariants}
     """
 }
