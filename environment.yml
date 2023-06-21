@@ -1,10 +1,10 @@
-name: cryptic-variants
+name: cryptic-variants-test
 channels:
-    - conda-forge
-    - defaults
     - bioconda
+    - conda-forge
 dependencies:
   - bioconda::freyja=1.4.3
+  - bioconda::nextflow=23.04.1
   - pip
   - pip:
     - python-outbreak-info==1.0.1

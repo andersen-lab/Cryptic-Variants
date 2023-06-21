@@ -76,7 +76,7 @@ df[["Clinical_Count", "Lineages"]] = df["Covariants"].apply(get_clinical_data)
 
 # Select clusters with low counts
 df = df.fillna('NA')
-df = df[df["Clinical_Count"] < args.max_clinical_count]
+df = df[df["Clinical_Count"] < int(args.max_clinical_count)]
 df = df.sort_values(by=["Clinical_Count"], ascending=True)
 
 # Save to file if there are cryptic variants present
