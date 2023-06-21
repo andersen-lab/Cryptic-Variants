@@ -1,5 +1,10 @@
+# nextflow
 work
 .nextflow*
-data/input_bam/*
-.vscode
 log/*
+
+# data
+data/input_bam/*
+data/output/*
+
+.vscode
