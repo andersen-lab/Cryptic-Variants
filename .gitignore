@@ -4,7 +4,7 @@ work
 log/*
 
 # data
-data/input_bam/*
+data/input/*
 data/output/*
 
 .vscode
