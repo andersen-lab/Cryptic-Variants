@@ -1,4 +1,5 @@
 import argparse
+import sys
 import pandas as pd
 from outbreak_data import outbreak_data
 
@@ -66,7 +67,7 @@ try:
     df["Covariants"] = df["Covariants"].apply(extract_gene_aa_mutation)
 except ValueError:
     print("Empty covariants column found. Exiting...")
-    exit(1)
+    sys.exit(1)
 
 df = df.dropna()
 
