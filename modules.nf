@@ -25,12 +25,12 @@ process TRIM {
 
     script:
     """
-    ivar trim -x 5 -e -i ${sorted_bam} -b ${primer_bed} -p ${sorted_bam.baseName}.trimmed.bam
+    samtools index ${sorted_bam}
+    ivar trim -x 5 -e -i ${sorted_bam} -b ${primer_bed} -p ${sorted_bam.baseName}.bam
     """
 }
 
 process COVARIANTS {
-    publishDir "data/output", mode: 'copy'
     input:
     path trimmed_bam
     path ref

@@ -11,8 +11,6 @@ nextflow.enable.dsl = 2
 params.input = "$baseDir/data/input/*.bam"
 params.output = "$baseDir/data/output"
 
-params.is_trimmed = true
-
 // Sars-Cov-2 specific parameters
 params.ref = "$PWD/data/NC_045512_Hu-1.fasta"
 params.gff_file = "$PWD/data/NC_045512_Hu-1.gff"
@@ -47,12 +45,7 @@ Channel
 
 workflow {
     SORT(input_bam_ch)
-
-    if (!params.is_trimmed) {
-        TRIM(SORT.out)
-        COVARIANTS(TRIM.out, ref, gff_file)
-    } else {
-        COVARIANTS(SORT.out, ref, gff_file)
-    }
+    //TRIM(SORT.out, primer_bed)
+    COVARIANTS(SORT.out, ref, gff_file)
     DETECT_CRYPTIC(COVARIANTS.out, detect_cryptic_script)
 }
