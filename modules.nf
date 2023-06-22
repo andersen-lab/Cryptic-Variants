@@ -31,6 +31,8 @@ process TRIM {
 }
 
 process COVARIANTS {
+    publishDir "data/output/covariants", mode: 'copy'
+    
     input:
     path trimmed_bam
     path ref
@@ -47,7 +49,7 @@ process COVARIANTS {
 }
 
 process DETECT_CRYPTIC {
-    publishDir "data/output", mode: 'copy'
+    publishDir "data/output/cryptic", mode: 'copy'
 
     input:
     path covariants
