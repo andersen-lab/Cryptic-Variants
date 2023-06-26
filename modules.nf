@@ -32,7 +32,7 @@ process TRIM {
 
 process COVARIANTS {
     publishDir "data/output/covariants", mode: 'copy'
-    
+
     input:
     path trimmed_bam
     path ref
@@ -44,7 +44,7 @@ process COVARIANTS {
     script:
     """
     samtools index ${trimmed_bam}
-    freyja covariants ${trimmed_bam} ${params.min_site} ${params.max_site} --gff-file ${gff_file} --ref-genome  ${ref} --output ${trimmed_bam.baseName}.covariants.tsv 
+    freyja covariants ${trimmed_bam} ${params.min_site} ${params.max_site} --min_count ${params.min_WW_count} --gff-file ${gff_file} --ref-genome  ${ref} --output ${trimmed_bam.baseName}.covariants.tsv 
     """
 }
 

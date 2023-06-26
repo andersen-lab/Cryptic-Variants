@@ -1,5 +1,4 @@
 import argparse
-import sys
 import pandas as pd
 from outbreak_data import outbreak_data
 
@@ -11,8 +10,10 @@ parser.add_argument(
     help="Maximum number of GISAID sequences for a cluster to be saved",
     default=10,
 )
-parser.add_argument("--location_id", help="Location id to query", default="USA")
-parser.add_argument("-o", "--output", help="Output file", default="cryptic_var.tsv")
+parser.add_argument("--location_id", help="Location id to query",
+                    default="USA")
+parser.add_argument("-o", "--output", help="Output file",
+                    default="cryptic_var.tsv")
 
 args = parser.parse_args()
 
@@ -63,26 +64,35 @@ df = df.drop(columns=["Coverage_start", "Coverage_end"])
 
 # Extract gene-aa mutation from mutation cluster
 df["Covariants"] = df["Covariants"].apply(lambda x: x.split(" "))
-try:
-    df["Covariants"] = df["Covariants"].apply(extract_gene_aa_mutation)
-except ValueError:
-    print("Empty covariants column found. Exiting...")
-    sys.exit(1)
+df["Covariants"] = df["Covariants"].apply(extract_gene_aa_mutation)
 
 df = df.dropna()
 
 # Aggregate by mutation cluster
-df = df.groupby(df['Covariants'].astype(str)).aggregate({'Covariants': 'first', 'WW_Count': 'sum'})
+df = df.groupby(df['Covariants'].astype(str))\
+       .aggregate({'Covariants': 'first', 'WW_Count': 'sum'})
 df = df[df["Covariants"].map(len) > 0]
 
 # Get clinical data for each mutation cluster
-df[["Clinical_Count", "Lineages"]] = df["Covariants"].apply(get_clinical_data)
+success = False
+try:
+    df[["Clinical_Count", "Lineages"]] = df["Covariants"]\
+                                        .apply(get_clinical_data)
+    success = True
+except ValueError:
+    print("Empty covariants column found. Skipping this sample.")
 
-# Select clusters with clinical counts below threshold
-df = df.fillna('NA')
-df = df[df["Clinical_Count"] < int(args.max_clinical_count)]
-df = df.sort_values(by=["Clinical_Count"], ascending=True)
+if success:
+    # Select clusters with clinical counts below threshold
+    df = df.fillna('NA')
+    df = df[df["Clinical_Count"] < int(args.max_clinical_count)]
+    df = df.sort_values(by=["Clinical_Count"], ascending=True)
 
-# Save to file if there are cryptic variants present
-df.to_csv(args.output, sep="\t", index=False)
+    # Save to file if there are cryptic variants present
+    df.to_csv(args.output, sep="\t", index=False)
+else:
+    # Save empty dataframe
+    colnames = ["Covariants", "WW_Count", "Clinical_Count", "Lineages"]
+    pd.DataFrame(columns=colnames).to_csv(args.output, sep="\t", index=False)
+
 print(f"Output saved to {args.output}")

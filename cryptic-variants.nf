@@ -16,13 +16,13 @@ params.ref = "$PWD/data/NC_045512_Hu-1.fasta"
 params.gff_file = "$PWD/data/NC_045512_Hu-1.gff"
 params.primer_bed = "$PWD/data/nCov-2019_v3.primer.bed"
 
-// Freyja covariants parameters (S-gene by default)
-params.min_site = 21563
-params.max_site = 25384
+// Freyja covariants parameters (SARS-CoV-2 RBD by default)
+params.min_site = 22556
+params.max_site = 23156
 
 // Cryptic variant detection parameters
-params.min_WW_count = 50
-params.max_gisaid_count = 10
+params.min_WW_count = 30
+params.max_gisaid_count = 5
 params.location_id = "USA"
 
 ref = file(params.ref)
