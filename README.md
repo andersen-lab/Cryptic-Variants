@@ -44,3 +44,6 @@ nextflow run cryptic-variants.nf \
 [--ref <path/to/reference.fasta> --gff_file <path/to/gff_file.gff> --primer_bed <path/to/primer.bed> --min_site <genomic_start_site> --max_site <genomic_end_site>]
 ```
 Note that the parameters `--ref`, `--gff_file`, and `--primer_bed` are optional. If not provided, the pipeline will use the default SARS-CoV-2 reference, gff file, and primer bed file located in the `data` directory. `--input` and `--output` will default to the respective files in the `data` directory if not provided, and `--min_site` and `--max_site` default to the SARS-CoV-2 RBD.
+
+### Example output
+```
