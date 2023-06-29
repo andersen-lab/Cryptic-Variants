@@ -41,13 +41,12 @@ def get_clinical_data(cluster):
     mutations = ",".join(cluster)
     
     query = f"mutations={mutations}&location={args.location_id}"
-    #try:
-    results = outbreak_data.get_outbreak_data(
-        "genomics/mutations-by-lineage", argstring=query
-    )["results"]
-    #except NameError:  # No clinical results found
-        
-        #return pd.Series([0, pd.NA])
+    try:
+        results = outbreak_data.get_outbreak_data(
+            "genomics/mutations-by-lineage", argstring=query
+        )["results"]
+    except NameError:  # No clinical results found    
+        return pd.Series([0, pd.NA])
 
     results = list(results[mutations])
 

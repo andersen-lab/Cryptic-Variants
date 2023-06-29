@@ -33,6 +33,6 @@ process DETECT_CRYPTIC {
 
     script:
     """
-    python ${detect_cryptic_script} --max_clinical_count ${params.max_gisaid_count} --location_id ${params.location_id} --output ${covariants.baseName}.cryptic.tsv ${covariants}
+    python ${detect_cryptic_script} --max_clinical_count ${params.max_clinical_count} --location_id ${params.location_id} --output ${covariants.baseName}.cryptic.tsv ${covariants}
     """
 }

@@ -39,11 +39,19 @@ This will provide a link prompting you to enter your GISAID username and passwor
 ### Running the pipeline
 ```
 nextflow run cryptic-variants.nf \
---input <path/to/input/dir/*.bam> \
---output <path/to/output/dir> \
-[--ref <path/to/reference.fasta> --gff_file <path/to/gff_file.gff> --primer_bed <path/to/primer.bed> --min_site <genomic_start_site> --max_site <genomic_end_site>]
+-entry [from_fastq|from_bam] \
+--input_dir <path/to/input/dir> \
+--output_dir <path/to/output/dir> \
+--ref <path/to/reference.fasta> \
+--gff_file <path/to/gff_file.gff> \
+--primer_bed <path/to/primer.bed> \
+--min_site
+--max_site
+--min_WW_count 
+--max_clinical_count
+--location_id
 ```
-Note that the parameters `--ref`, `--gff_file`, and `--primer_bed` are optional. If not provided, the pipeline will use the default SARS-CoV-2 reference, gff file, and primer bed file located in the `data` directory. `--input` and `--output` will default to the respective files in the `data` directory if not provided, and `--min_site` and `--max_site` default to the SARS-CoV-2 RBD.
+The main workflow will accept either paired fastq files, or aligned bam files from `input_dir` (specified by setting `-entry` to either `from_fastq` or `from_bam`). Note that the parameters `--ref`, `--gff_file`, and `--primer_bed` are optional. If not provided, the pipeline will use the default SARS-CoV-2 reference, gff file, and primer bed file located in the `data` directory. `--input` and `--output` will default to the respective files in the `data` directory if not provided, and `--min_site` and `--max_site` default to the SARS-CoV-2 RBD.
 
 ### Example output
 ```

@@ -4,7 +4,7 @@
  *  Wastewater Cryptic Variant Detection
  */
 
-// Enable DSL 2 syntax
+
 nextflow.enable.dsl = 2
 
 // Define default input/output directories
@@ -22,30 +22,29 @@ params.max_site = 23156
 
 // Cryptic variant detection parameters
 params.min_WW_count = 30
-params.max_gisaid_count = 5
+params.max_clinical_count = 5
 params.location_id = "USA"
 
 log.info """\
     ====================================================================
     W A S T E W A T E R  C R Y P T I C  V A R I A N T  D E T E C T I O N
     ====================================================================
-    input dir: ${params.input_dir}
-    output dir: ${params.output_dir}
-    reference: ${params.ref}
-    gff file: ${params.gff_file}
-    primer bed file: ${params.primer_bed}
-    min genomic site: ${params.min_site}
-    max genomic site: ${params.max_site}
-    min WW count: ${params.min_WW_count}
-    max clinical count: ${params.max_gisaid_count}
-    location id: ${params.location_id}
+    input dir          : ${params.input_dir}
+    output dir         : ${params.output_dir}
+    reference          : ${params.ref}
+    gff file           : ${params.gff_file}
+    primer bed file    : ${params.primer_bed}
+    min genomic site   : ${params.min_site}
+    max genomic site   : ${params.max_site}
+    min WW count       : ${params.min_WW_count}
+    max clinical count : ${params.max_clinical_count}
+    location id        : ${params.location_id}
     """
     .stripIndent()
 
 ref = file(params.ref)
 gff_file = file(params.gff_file)
 primer_bed = file(params.primer_bed)
-
 detect_cryptic_script = file("$PWD/scripts/detect_cryptic.py")
 
 // Import modules
@@ -59,9 +58,10 @@ include {
     DETECT_CRYPTIC
 } from "./modules/variant_detection.nf"
 
+// fastq entry
 workflow from_fastq {
     Channel
-        .fromFilePairs(params.input_dir + "/*{1,2}.fastq", checkIfExists: true, size:2)
+        .fromFilePairs(params.input_dir + "/*{1,2}.fastq*", checkIfExists: true, size:2)
         .set { input_fastq_ch }
     MINIMAP2(input_fastq_ch, ref)
     input_bam_ch = MINIMAP2.out
@@ -69,6 +69,7 @@ workflow from_fastq {
     detect_cryptic(input_bam_ch)
 }
 
+// bam entry
 workflow from_bam {
     Channel
         .fromPath(params.input_dir + "/*.bam", checkIfExists: true)
