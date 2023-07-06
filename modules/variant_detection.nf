@@ -22,6 +22,7 @@
 }
 
 process DETECT_CRYPTIC {
+
     publishDir "data/output/cryptic", mode: 'copy'
 
     input:

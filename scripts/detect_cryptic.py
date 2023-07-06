@@ -45,7 +45,8 @@ def get_clinical_data(cluster):
         results = outbreak_data.get_outbreak_data(
             "genomics/mutations-by-lineage", argstring=query
         )["results"]
-    except NameError:  # No clinical results found    
+    except NameError as e:  # No clinical results found
+        print(e) 
         return pd.Series([0, pd.NA])
 
     results = list(results[mutations])

@@ -11,6 +11,9 @@ nextflow.enable.dsl = 2
 params.input_dir = "$PWD/data/input"
 params.output_dir = "$PWD/data/output"
 
+// If input bam file is trimmed, set to true
+params.trimmed = false
+
 // Sars-Cov-2 specific parameters
 params.ref = "$PWD/data/NC_045512_Hu-1.fasta"
 params.gff_file = "$PWD/data/NC_045512_Hu-1.gff"
@@ -83,7 +86,11 @@ workflow detect_cryptic {
     input_bam_ch
 
     main:
-    IVAR_TRIM(input_bam_ch, primer_bed)
-    FREYJA_COVARIANTS(IVAR_TRIM.out, ref, gff_file)
+    if (!params.trimmed) {
+        IVAR_TRIM(input_bam_ch, primer_bed)
+        FREYJA_COVARIANTS(IVAR_TRIM.out, ref, gff_file)
+    } else {
+        FREYJA_COVARIANTS(input_bam_ch, ref, gff_file)
+    }
     DETECT_CRYPTIC(FREYJA_COVARIANTS.out, detect_cryptic_script)
 }
