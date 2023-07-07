@@ -11,7 +11,7 @@ parser.add_argument(
     default=10,
 )
 parser.add_argument("--location_id", help="Location id to query",
-                    default="USA")
+                    default='global')
 parser.add_argument("-o", "--output", help="Output file",
                     default="cryptic_var.tsv")
 
@@ -40,7 +40,11 @@ def extract_gene_aa_mutation(cluster):
 def get_clinical_data(cluster):
     mutations = ",".join(cluster)
     
-    query = f"mutations={mutations}&location={args.location_id}"
+    if args.location_id == 'global':
+        query = f"mutations={mutations}"
+    else:
+        query = f"mutations={mutations}&location={args.location_id}"
+        
     try:
         results = outbreak_data.get_outbreak_data(
             "genomics/mutations-by-lineage", argstring=query

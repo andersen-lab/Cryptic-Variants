@@ -12,7 +12,7 @@ params.input_dir = "$PWD/data/input"
 params.output_dir = "$PWD/data/output"
 
 // If input bam file is trimmed, set to true
-params.trimmed = false
+params.skip_trimming = false
 
 // Sars-Cov-2 specific parameters
 params.ref = "$PWD/data/NC_045512_Hu-1.fasta"
@@ -26,7 +26,7 @@ params.max_site = 23156
 // Cryptic variant detection parameters
 params.min_WW_count = 30
 params.max_clinical_count = 5
-params.location_id = "USA"
+params.location_id = 'global'
 
 log.info """\
     ====================================================================
@@ -86,7 +86,7 @@ workflow detect_cryptic {
     input_bam_ch
 
     main:
-    if (!params.trimmed) {
+    if (!params.skip_trimming) {
         IVAR_TRIM(input_bam_ch, primer_bed)
         FREYJA_COVARIANTS(IVAR_TRIM.out, ref, gff_file)
     } else {

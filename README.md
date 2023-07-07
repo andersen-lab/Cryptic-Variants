@@ -38,20 +38,39 @@ This will provide a link prompting you to enter your GISAID username and passwor
 
 ### Running the pipeline
 ```
-nextflow run cryptic-variants.nf \
--entry [from_fastq|from_bam] \
---input_dir <path/to/input/dir> \
---output_dir <path/to/output/dir> \
---ref <path/to/reference.fasta> \
---gff_file <path/to/gff_file.gff> \
---primer_bed <path/to/primer.bed> \
---min_site
---max_site
---min_WW_count 
---max_clinical_count
---location_id
+nextflow run main.nf -entry [from_fastq|from_bam] --input_dir <path/to/input/dir>  --output_dir <path/to/output/dir> 
 ```
-The main workflow will accept either paired fastq files, or aligned bam files from `input_dir` (specified by setting `-entry` to either `from_fastq` or `from_bam`). Note that the parameters `--ref`, `--gff_file`, and `--primer_bed` are optional. If not provided, the pipeline will use the default SARS-CoV-2 reference, gff file, and primer bed file located in the `data` directory. `--input` and `--output` will default to the respective files in the `data` directory if not provided, and `--min_site` and `--max_site` default to the SARS-CoV-2 RBD.
+Set `-entry` to `from_fastq` if you are providing paired fastq files, or `from_bam` if you are providing aligned bam files. In the output directory, you will find a `cryptic_variants` directory containing potential cryptic variants, as well as a `covariants` directory containing the output from `freyja covariants` for the provided samples (see [freyja](https://github.com/andersen-lab/Freyja)).
 
-### Example output
+### Optional parameters
 ```
+--ref <path/to/reference.fasta>
+            Reference genome to use for alignment and covariant detection
+            (default: data/NC_045512.2_Hu-1.fasta)
+--gff_file <path/to/gff_file.gff>
+            GFF file containing gene annotations
+            (default: data/NC_045512.2_Hu-1.gff)
+--primer_bed <path/to/primer.bed>
+            BED file containing primer locations for primer trimming
+            (default: data/nCoV-2019_v3.primer.bed)
+--skip_trimming <true|false>
+            Whether or not to trim primer sequences from reads. If true, primer
+            trimming will be skipped.
+            (default: false)
+--min_site <int>
+            Minimum genomic site to consider for cryptic variant detection
+            (default: 22556) (RBD start)
+--max_site <int>
+            Maximum genomic site to consider for cryptic variant detection
+            (default: 23156) (RBD end)
+--min_WW_count <int>
+            Minimum number of wastewater hits to consider a cluster of
+            variants in a given sample
+            (default: 30)
+--max_clinical_count <int>
+            Maximum number of clinical hits for a variant to be considered
+            cryptic
+            (default: 5)
+--location_id <str>
+            Location ID to query from GISAID
+            (default: 'global')
