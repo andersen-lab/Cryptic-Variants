@@ -37,6 +37,7 @@ log.info """\
     reference          : ${params.ref}
     gff file           : ${params.gff_file}
     primer bed file    : ${params.primer_bed}
+    skip trimming      : ${params.skip_trimming}
     min genomic site   : ${params.min_site}
     max genomic site   : ${params.max_site}
     min WW count       : ${params.min_WW_count}

@@ -26,7 +26,7 @@ def extract_gene_aa_mutation(cluster):
             if "*" in variant or "INS" in variant:
                 continue  # Ignore stop codons and insertions
             elif "DEL" in variant:
-                if len(variant.split(")(")[0].split(",")) % 3 != 0:
+                if int(variant.split(")(")[0].split(",")[1]) % 3 != 0:
                     continue # Ignore single nt deletions
                 else:
                     cluster_final.append(variant.split(")(")[1][:-1])         
@@ -50,7 +50,6 @@ def get_clinical_data(cluster):
             "genomics/mutations-by-lineage", argstring=query
         )["results"]
     except NameError as e:  # No clinical results found
-        print(e) 
         return pd.Series([0, pd.NA])
 
     results = list(results[mutations])
