@@ -22,6 +22,12 @@ parser.add_argument("-o", "--output", help="Output file",
 
 args = parser.parse_args()
 
+def sort_cluster(variant):
+    if 'DEL' in variant:
+        return int(variant.split('DEL')[0][:-1])
+    else:
+        return int(variant.split(':')[1][1:-2])
+    
 def extract_gene_aa_mutation(cluster):
     # Parse freyja covariants output
     cluster_final = []
@@ -44,7 +50,8 @@ def extract_gene_aa_mutation(cluster):
     if len(cluster_final) < int(args.min_cluster_size):
         return pd.NA
     
-    cluster_final = list(dict.fromkeys(cluster_final))
+    cluster_final = list(set(cluster_final))
+    cluster_final.sort(key=sort_cluster)
 
     return cluster_final
 
