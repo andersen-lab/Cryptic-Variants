@@ -3,7 +3,7 @@
  */
 
  process FREYJA_COVARIANTS {
-    publishDir "${params.output_dir}/output/covariants", mode: 'copy'
+    publishDir "${params.output_dir}/covariants", mode: 'copy'
 
     input:
     path trimmed_bam
@@ -23,7 +23,7 @@
 
 process DETECT_CRYPTIC {
 
-    publishDir "${params.output_dir}cryptic", mode: 'copy'
+    publishDir "${params.output_dir}/cryptic", mode: 'copy'
 
     input:
     path covariants

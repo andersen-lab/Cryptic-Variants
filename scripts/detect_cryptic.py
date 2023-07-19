@@ -1,6 +1,7 @@
 import argparse
 import pandas as pd
 from outbreak_data import outbreak_data
+import re
 
 parser = argparse.ArgumentParser()
 
@@ -10,6 +11,10 @@ parser.add_argument(
     help="Maximum number of GISAID sequences for a cluster to be saved",
     default=10,
 )
+parser.add_argument("--min_cluster_size", help="Minimum cluster size", default=2)
+parser.add_argument("--min_site", help="Minimum genomic region", default=22556)
+parser.add_argument("--max_site", help="Maximum genomic region", default=23156)
+
 parser.add_argument("--location_id", help="Location id to query",
                     default='global')
 parser.add_argument("-o", "--output", help="Output file",
@@ -19,7 +24,6 @@ args = parser.parse_args()
 
 def extract_gene_aa_mutation(cluster):
     # Parse freyja covariants output
-
     cluster_final = []
     for variant in cluster:
         if ":" in variant:
@@ -29,12 +33,19 @@ def extract_gene_aa_mutation(cluster):
                 if int(variant.split(")(")[0].split(",")[1]) % 3 != 0:
                     continue # Ignore single nt deletions
                 else:
-                    cluster_final.append(variant.split(")(")[1][:-1])         
+                    site = int(variant.split(',')[0][1:])
+                    if (site >= int(args.min_site) and site <= int(args.max_site)):
+                        cluster_final.append(variant.split(")(")[1][:-1]) # Deletion
             else:
-                cluster_final.append(variant.split("(")[1][:-1]) # SNV
+                site = int(variant.split('(')[0][1:-1])
+                if (site >= int(args.min_site) and site <= int(args.max_site)):
+                    cluster_final.append(variant.split("(")[1][:-1]) # SNV
 
-    if len(cluster_final) == 0:
+    if len(cluster_final) < int(args.min_cluster_size):
         return pd.NA
+    
+    cluster_final = list(dict.fromkeys(cluster_final))
+
     return cluster_final
 
 def get_clinical_data(cluster):
