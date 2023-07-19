@@ -24,7 +24,7 @@ args = parser.parse_args()
 
 def sort_cluster(variant):
     if 'DEL' in variant:
-        return int(variant.split('DEL')[0][:-1])
+        return int(variant.split('DEL')[1][:-1])
     else:
         return int(variant.split(':')[1][1:-2])
     
