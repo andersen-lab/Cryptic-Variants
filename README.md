@@ -74,3 +74,28 @@ Set `-entry` to `from_fastq` if you are providing paired fastq files, or `from_b
 --location_id <str>
             Location ID to query from GISAID
             (default: 'global')
+```
+### Output
+
+The pipeline produces two output directories: `cryptic_variants` and `covariants`. The `cryptic_variants` directory will contain a `{sample}.covariants.cryptic.tsv` for each sample in the input directory. This file contains the following columns:
+
+`Covariants`
+    Mutation cluster detected
+`WW_Count`
+    Number of wastewater hits for the mutation cluster in this sample
+`Clinical_Count`
+    Number of clinical hits for the mutation cluster in this sample
+`Lineages`
+    Lineages associated with the mutation cluster (if any)
+
+```
+Covariants      WW_Count        Clinical_Count  Lineages
+['S:G416E', 'S:K417N', 'S:N440K', 'S:L452Q']    12      0       NA
+['S:K417N', 'S:S438P', 'S:N440K', 'S:L452Q']    14      0       NA
+['S:K417N', 'S:Y421H', 'S:N440K', 'S:L452Q']    11      0       NA
+['S:G416G', 'S:K417N', 'S:N440K', 'S:L452Q']    11      2       ['ba.2.12.1']
+['S:K417N', 'S:N440K', 'S:G446G', 'S:L452Q']    14      2       ['bg.5']
+['S:K417N', 'S:N440K', 'S:L452Q', 'S:F456F']    15      2       ['ba.2.12.1']
+```
+
+The `covariants` directory contains the raw output from [freyja covariants](https://github.com/andersen-lab/Freyja).

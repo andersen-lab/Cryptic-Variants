@@ -1,7 +1,7 @@
 import argparse
 import pandas as pd
 from outbreak_data import outbreak_data
-import re
+
 
 parser = argparse.ArgumentParser()
 
@@ -27,9 +27,9 @@ def sort_cluster(variant):
         if '/' in variant:
             return int(variant.split('DEL')[1].split('/')[0])
         else:
-            return int(variant.split('DEL')[1][:-1])
+            return int(variant.split('DEL')[1])
     else:
-        return int(variant.split(':')[1][1:-2])
+        return int(variant.split(':')[1][1:-1])
     
 def extract_gene_aa_mutation(cluster):
     # Parse freyja covariants output
