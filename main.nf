@@ -53,6 +53,13 @@ detect_cryptic_script = file("$PWD/scripts/detect_cryptic.py")
 
 // Import modules
 include {
+    FASTERQ_DUMP;
+    GET_AMPLICON_SCHEME;
+    GET_ACCESSIONS;
+} from "./modules/sra.nf"
+
+
+include {
     MINIMAP2;
     IVAR_TRIM;
 } from "./modules/preprocessing.nf"
@@ -62,7 +69,6 @@ include {
     DETECT_CRYPTIC
 } from "./modules/variant_detection.nf"
 
-// fastq entry
 workflow from_fastq {
     Channel
         .fromFilePairs(params.input_dir + "/*{1,2}.fastq*", checkIfExists: true, size:2)
@@ -73,11 +79,28 @@ workflow from_fastq {
     detect_cryptic(input_bam_ch)
 }
 
-// bam entry
 workflow from_bam {
     Channel
         .fromPath(params.input_dir + "/*.bam", checkIfExists: true)
         .set { input_bam_ch }
+
+    detect_cryptic(input_bam_ch)
+}
+
+workflow from_sra {
+    Channel
+        .fromPath(params.input_dir)
+        .set { input_ch }
+
+    GET_ACCESSIONS(input_ch)
+        .splitCsv()
+        .map { line -> line.join('') }
+        .set { acc_ch }
+
+    acc_ch.view()
+    FASTERQ_DUMP(acc_ch)
+    MINIMAP2(FASTERQ_DUMP.out, ref)
+    input_bam_ch = MINIMAP2.out
 
     detect_cryptic(input_bam_ch)
 }

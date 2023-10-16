@@ -6,5 +6,5 @@ log/*
 # data
 data/input/*
 data/output/*
-
+data/*
 .vscode

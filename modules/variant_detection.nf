@@ -4,6 +4,7 @@
 
  process FREYJA_COVARIANTS {
     publishDir "${params.output_dir}/covariants", mode: 'copy'
+    errorStrategy 'ignore'
 
     input:
     path trimmed_bam
